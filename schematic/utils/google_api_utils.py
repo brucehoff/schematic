@@ -32,7 +32,7 @@ def generate_token() -> Credentials:
     creds = None
     # The file token.pickle stores the user's Google OAuth client credentials, access and refresh tokens,
     # and is created automatically when the authorization flow completes for the first time.
-    if os.environ has TOKEN_JSON_PICKLE_ENV_NAME:
+    if TOKEN_JSON_PICKLE_ENV_NAME in os.environ:
     	creds = jsonpickle.decode(os.environ[TOKEN_JSON_PICKLE_ENV_NAME])
     elif os.path.exists(CONFIG.TOKEN_PICKLE):
         with open(CONFIG.TOKEN_PICKLE, "rb") as token:
