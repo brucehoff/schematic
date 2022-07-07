@@ -150,7 +150,14 @@ Most Google sheet functionality could be authenticated with service account. How
 requires token-based authentication. As browser support that requires the token-based authentication diminishes, we are hoping to deprecate
 token-based authentication and keep only service account authentication in the future. 
 
+### Passing configuration as environment variables.
 
+- An alternative to passing a `.synapseConfig` file with an personal access (auth) token is to set the environment variable `SYNAPSE_AUTH_TOKEN` 
+to contain this value.
+
+- An alternative to passing a `token.pickle` file is to set the environment variable `TOKEN_JSON_PICKLE` 
+to have the value written to the file `<token_pickle>.json`, where `<token_pickle>` is the value in the `config.yml` file,
+ e.g., by default the file is, `token.pickle.json`.
 
 ### Development process instruction
 

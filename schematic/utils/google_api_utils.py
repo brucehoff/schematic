@@ -24,13 +24,17 @@ SCOPES = [
     "https://www.googleapis.com/auth/drive",
 ]
 
+TOKEN_JSON_PICKLE_ENV_NAME = "TOKEN_JSON_PICKLE"
+
 
 # it will create 'token.pickle' based on credentials.json
 def generate_token() -> Credentials:
     creds = None
-    # The file token.pickle stores the user's access and refresh tokens,
+    # The file token.pickle stores the user's Google OAuth client credentials, access and refresh tokens,
     # and is created automatically when the authorization flow completes for the first time.
-    if os.path.exists(CONFIG.TOKEN_PICKLE):
+    if os.environ has TOKEN_JSON_PICKLE_ENV_NAME:
+    	creds = jsonpickle.decode(os.environ[TOKEN_JSON_PICKLE_ENV_NAME])
+    elif os.path.exists(CONFIG.TOKEN_PICKLE):
         with open(CONFIG.TOKEN_PICKLE, "rb") as token:
             creds = pickle.load(token)
 
@@ -44,6 +48,8 @@ def generate_token() -> Credentials:
         # Save the credentials for the next run
         with open(CONFIG.TOKEN_PICKLE, "wb") as token:
             pickle.dump(creds, token)
+        with open(CONFIG.TOKEN_PICKLE+".json", "wb") as token:
+        	token.write(jsonpickle.encode(creds))
 
     return creds
 
