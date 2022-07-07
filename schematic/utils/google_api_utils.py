@@ -14,6 +14,7 @@ from google.oauth2.credentials import Credentials
 from schematic import CONFIG
 from schematic.store.synapse import SynapseStorage
 import pandas as pd
+import jsonpickle
 
 logger = logging.getLogger(__name__)
 
