@@ -21,7 +21,7 @@ WORKDIR /home/app
 # Edit run_api.py to use Docker host 0.0.0.0 instead of default 127.0.0.1
 # THIS IS NOT THE WAY TO DO IT!!!!! RUN git clone https://github.com/Sage-Bionetworks/schematic/
 # INSTEAD DO THIS:
-COPY schematic/ /home/app/schematic/
+COPY ./ /home/app/
 WORKDIR /home/app/schematic
 RUN echo 'from api import create_app\nif __name__ == "__main__":\n  app = create_app()\n  app.run(host="0.0.0.0", port=3001, debug=True)' > run_api.py
 
