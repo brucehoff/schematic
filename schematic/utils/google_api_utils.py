@@ -49,8 +49,8 @@ def generate_token() -> Credentials:
         # Save the credentials for the next run
         with open(CONFIG.TOKEN_PICKLE, "wb") as token:
             pickle.dump(creds, token)
-        with open(CONFIG.TOKEN_PICKLE+".json", "wb") as token:
-        	os.write(token, jsonpickle.encode(creds))
+        with open(CONFIG.TOKEN_PICKLE+".json", "w") as token:
+        	token.write(jsonpickle.encode(creds))
 
     return creds
 
