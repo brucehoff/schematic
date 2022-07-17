@@ -31,6 +31,8 @@ jobs:
           
       - name: See if mvn is available
         run: mvn -version
+        run: echo "/usr/share/apache-maven-3.8.6/local/bin" >> $GITHUB_PATH
+        run: echo $PATH
           
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -60,6 +62,7 @@ jobs:
           cdk_subcommand: 'synth'
           working_dir: 'cdk'
         env:
+          PATH: /usr/share/apache-maven-3.8.6
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: 'us-east-1'
