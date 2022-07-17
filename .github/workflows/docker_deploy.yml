@@ -9,11 +9,11 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_PATH: ${{ env.REGISTRY }}/${{ github.repository }}
 
 
 jobs:
-  build-and-push-image:
+  build-and-push-image-then-cdk-deploy:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -34,7 +34,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.IMAGE_PATH }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
@@ -43,3 +43,34 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          
+      # https://github.com/marketplace/actions/aws-cdk-github-actions
+      # TODO How do we pass in the container imaeg name+tag, as an env variable?
+      - name: cdk synth
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: 'synth'
+          working_dir: 'cdk'
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'
+          DOCKER_IMAGE: ${{ env.IMAGE_PATH }}:${{ steps.meta.outputs.version }}
+          PORT: 3838
+          COST_CENTER: "NO PROGRAM / 000000"
+          STACK_NAME_PREFIX: ${{ github.repository }}
+          # These are the names for the secrets in AWS Secrets Manager
+          SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ env.STACK_NAME_PREFIX }}/synapse-auth-token
+          SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ env.STACK_NAME_PREFIX }}/google-auth-json
+          CONTAINER_ENV: example
+
+      - name: cdk deploy
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: 'deploy'
+          working_dir: 'cdk'
+          actions_comment: false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: 'us-east-1'         
