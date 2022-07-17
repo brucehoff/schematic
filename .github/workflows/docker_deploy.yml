@@ -60,8 +60,10 @@ jobs:
           COST_CENTER: "NO PROGRAM / 000000"
           STACK_NAME_PREFIX: ${{ github.repository }}
           # These are the names for the secrets in AWS Secrets Manager
-          SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ env.STACK_NAME_PREFIX }}/synapse-auth-token
-          SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ env.STACK_NAME_PREFIX }}/google-auth-json
+          # We use the github repo' as a prefix to avoid collisions with other 
+          # deployed stacks in the same AWS account.
+          SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ github.repository }}/synapse-auth-token
+          SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ github.repository }}/google-auth-json
           CONTAINER_ENV: example
 
       - name: cdk deploy

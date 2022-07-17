@@ -35,8 +35,8 @@ public class DockerFargateStack extends Stack {
 	private static final String COST_CENTER = "COST_CENTER";
 	private static final String COST_CENTER_TAG_NAME = "CostCenter";
 	private static final String PORT_NUMBER = "PORT";
-	private static final String SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY = "synapse-auth-token";
-	private static final String SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY = "google-auth-json";
+	private static final String SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY = "SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY";
+	private static final String SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY = "SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY";
 	private static final String SECRETS_MANAGER_ENV_PREFIX = "secrets-manager-";
 	
 	// the following are the secret names as they will appear inside the container
@@ -48,8 +48,6 @@ public class DockerFargateStack extends Stack {
 	private static final String CONTAINER_ENV = "CONTAINER_ENV"; // name of env passed from GitHub action
 	private static final String ENV_NAME = "ENV"; // name of env as seen in container
 	
-	private String id;
-	
 	private static String getRequiredEnv(String envName) {
 		String result = System.getenv(envName);
 		if (StringUtils.isEmpty(result)) {
@@ -58,7 +56,7 @@ public class DockerFargateStack extends Stack {
 		return result;
 	}
 	
-	private static String getId() {
+	private static String createId() {
 		return getRequiredEnv(STACK_NAME_PREFIX)+ID_SUFFIX;
 	}
 	
@@ -87,13 +85,11 @@ public class DockerFargateStack extends Stack {
 	}
 	
 	private static String getSecretsManagerSynapseAuthTokenKey() {
-		return getRequiredEnv(STACK_NAME_PREFIX)+"/"+
-				System.getenv(SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY);
+		return getRequiredEnv(SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY);
 	}
 	
 	private static String getSecretsManagerGoogleAuthJSONKey() {
-		return getRequiredEnv(STACK_NAME_PREFIX)+"/"+
-				System.getenv(SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY);
+		return getRequiredEnv(SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY);
 	}
 	
 	private static String getContainerEnv() {
@@ -106,14 +102,13 @@ public class DockerFargateStack extends Stack {
 	
 	private Secret createSecret(String name) {
 		ISecret isecret = software.amazon.awscdk.services.secretsmanager.
-				Secret.fromSecretNameV2(this, id, name);
+				Secret.fromSecretNameV2(this, name, name);
 		return Secret.fromSecretsManager(isecret);
 	}
 
 
 	public DockerFargateStack(final Construct scope, final StackProps props) {
-		super(scope, getId(), props);
-		this.id=getId();
+		super(scope, createId(), props);
 
 		Vpc vpc = Vpc.Builder.create(this, getVpcName())
 				.maxAzs(2)
