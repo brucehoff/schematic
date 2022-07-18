@@ -22,12 +22,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-
-      - name: Set up JDK and Maven
-        uses: actions/setup-java@v3
-        with:
-          java-version: '11'
-          distribution: 'adopt'
           
       - name: Log in to the Container registry
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
@@ -50,22 +44,12 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
         
-      - uses: actions/setup-node@v2
+        # https://github.com/marketplace/actions/aws-cdk-github-actions
+      - name: cdk synth
+        uses: youyo/aws-cdk-github-actions@v2
         with:
-          node-version: "14"
-          
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@master
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: 'us-east-1'
-          
-      - name: Install dependencies
-        run: yarn
-        
-      - name: Synth stack
-        run: cd cdk && yarn cdk synth
+          cdk_subcommand: 'synth'
+          working_dir: 'cdk'
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -80,10 +64,14 @@ jobs:
           SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ github.repository }}/synapse-auth-token
           SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ github.repository }}/google-auth-json
           CONTAINER_ENV: example
-          
-      - name: Deploy stack
-        run: cd cdk && yarn cdk deploy --all --require-approval never
+
+      - name: cdk deploy
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: 'deploy'
+          working_dir: 'cdk'
+          actions_comment: false
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1'         
+          AWS_DEFAULT_REGION: 'us-east-1'      

@@ -1,14 +1,17 @@
 {
-  "app": "mvn -e -q compile exec:java",
+  "app": "python3 app.py",
   "watch": {
     "include": [
       "**"
     ],
     "exclude": [
+      "README.md",
       "cdk*.json",
-      "target",
-      "pom.xml",
-      "src/test"
+      "requirements*.txt",
+      "source.bat",
+      "**/__init__.py",
+      "python/__pycache__",
+      "tests"
     ]
   },
   "context": {
