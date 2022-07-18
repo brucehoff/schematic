@@ -53,7 +53,7 @@ jobs:
       # https://github.com/marketplace/actions/aws-cdk-github-actions
       - name: cdk synth
         uses: MikeBild/aws-cdk-js-github-action@1.0.0
-        working-directory: cdk
+        working-directory: ./cdk
         with:
           args: 'synth'
 
@@ -75,7 +75,7 @@ jobs:
 
       - name: cdk deploy
         uses: MikeBild/aws-cdk-js-github-action@1.0.0
-        working-directory: cdk
+        working-directory: ./cdk
         with:
           args: 'deploy'
         env:
