@@ -10,7 +10,18 @@ on:
 env:
   REGISTRY: ghcr.io
   IMAGE_PATH: ghcr.io/${{ github.repository }}
-
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  AWS_DEFAULT_REGION: 'us-west-1' 
+  PORT: 3838
+  COST_CENTER: "NO PROGRAM / 000000"
+  STACK_NAME_PREFIX: ${{ github.repository }}
+   # These are the names for the secrets in AWS Secrets Manager
+  # We use the github repo' as a prefix to avoid collisions with other 
+  # deployed stacks in the same AWS account.
+  SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ github.repository }}/synapse-auth-token
+  SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ github.repository }}/google-auth-json
+  CONTAINER_ENV: example
 
 jobs:
   build-and-push-image-then-cdk-deploy:
@@ -51,20 +62,8 @@ jobs:
           cdk_subcommand: 'synth'
           working_dir: 'cdk'
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1'
           DOCKER_IMAGE: ${{ env.IMAGE_PATH }}:${{ steps.meta.outputs.version }}
-          PORT: 3838
-          COST_CENTER: "NO PROGRAM / 000000"
-          STACK_NAME_PREFIX: ${{ github.repository }}
-          # These are the names for the secrets in AWS Secrets Manager
-          # We use the github repo' as a prefix to avoid collisions with other 
-          # deployed stacks in the same AWS account.
-          SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ github.repository }}/synapse-auth-token
-          SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ github.repository }}/google-auth-json
-          CONTAINER_ENV: example
-
+ 
       - name: cdk deploy
         uses: youyo/aws-cdk-github-actions@v2
         with:
@@ -73,17 +72,5 @@ jobs:
           working_dir: 'cdk'
           actions_comment: false
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-1'      
           DOCKER_IMAGE: ${{ env.IMAGE_PATH }}:${{ steps.meta.outputs.version }}
-          PORT: 3838
-          COST_CENTER: "NO PROGRAM / 000000"
-          STACK_NAME_PREFIX: ${{ github.repository }}
-          # These are the names for the secrets in AWS Secrets Manager
-          # We use the github repo' as a prefix to avoid collisions with other 
-          # deployed stacks in the same AWS account.
-          SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ github.repository }}/synapse-auth-token
-          SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ github.repository }}/google-auth-json
-          CONTAINER_ENV: example
-          
+           
