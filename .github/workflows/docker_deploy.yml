@@ -52,15 +52,16 @@ jobs:
         
       # https://github.com/marketplace/actions/aws-cdk-github-actions
       - name: cdk synth
-        uses: MikeBild/aws-cdk-js-github-action@1.0.0
+        uses: tj-actions/aws-cdk@v3
         with:
-          args: 'synth'
+          cdk_subcommand: "synth"
+          working_dir: "cdk"
 
         env:
           PATH: ${{ env.PATH }}:/usr/bin
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: 'us-east-1'
+          AWS_DEFAULT_REGION: 'us-east-1'
           DOCKER_IMAGE: ${{ env.IMAGE_PATH }}:${{ steps.meta.outputs.version }}
           PORT: 3838
           COST_CENTER: "NO PROGRAM / 000000"
@@ -73,9 +74,10 @@ jobs:
           CONTAINER_ENV: example
 
       - name: cdk deploy
-        uses: MikeBild/aws-cdk-js-github-action@1.0.0
+        uses: tj-actions/aws-cdk@v3
         with:
-          args: 'deploy'
+          cdk_subcommand: "deploy"
+          working_dir: "cdk"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
