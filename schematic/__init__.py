@@ -9,8 +9,7 @@ from schematic.loader import LOADER
 from schematic.utils.google_api_utils import download_creds_file, generate_token
 from schematic.utils.cli_utils import query_dict
 from schematic.help import init_command
-import os
-import json
+
 
 logging.basicConfig(
     format=("%(levelname)s: [%(asctime)s] %(name)s" " - %(message)s"),
@@ -49,18 +48,6 @@ def init(auth, config):
         logger.exception(e)
         sys.exit(1)
         
-    # If AWS secrets manager injected secrets, then convert them to 'normal' env vars
-    SECRETS_MANAGER_ENV_NAME = "SECRETS_MANAGER_SECRETS" # TODO This is defined in docker_fargate_stack.py  Need to define in just one place.
-    secrets_manager_data = os.getenv(SECRETS_MANAGER_ENV_NAME)
-    if secrets_manager_data is not None:
-    	logger.info(f"FOUND env var {SECRETS_MANAGER_ENV_NAME}.")
-    	json_dict = json.loads(secrets_manager_data)
-    	for key, value in json_dict.items():
-    		logger.info(f"Set env var for {key}")
-    		os.setenv(key, value)
-    else:
-    	logger.info(f"No env var {SECRETS_MANAGER_ENV_NAME} found.")
-
     # download crdentials file based on selected mode of authentication
     download_creds_file(auth)
 
