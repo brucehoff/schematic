@@ -43,7 +43,7 @@ def create_app():
     	json_dict = json.loads(secrets_manager_data)
     	for key, value in json_dict.items():
     		logger.info(f"Set env var for {key}")
-    		os.setenv(key, value)
+    		os.environ[key]=value
     else:
     	logger.info(f"No env var {SECRETS_MANAGER_ENV_NAME} found.")
 
