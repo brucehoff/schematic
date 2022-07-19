@@ -11,7 +11,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
-
+logger = logging.getLogger(__name__)
 
 def create_app():
     connexionapp = connexion.FlaskApp(__name__, specification_dir="openapi/")
