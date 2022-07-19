@@ -53,9 +53,13 @@ def init(auth, config):
     SECRETS_MANAGER_ENV_NAME = "SECRETS_MANAGER_SECRETS" # TODO This is defined in docker_fargate_stack.py  Need to define in just one place.
     secrets_manager_data = os.getenv(SECRETS_MANAGER_ENV_NAME)
     if secrets_manager_data is not None:
+    	logger.info(f"FOUND env var {SECRETS_MANAGER_ENV_NAME}.")
     	json_dict = json.loads(secrets_manager_data)
     	for key, value in json_dict.items():
+    		logger.info(f"Set env var for {key}")
     		os.setenv(key, value)
+    else:
+    	logger.info(f"No env var {SECRETS_MANAGER_ENV_NAME} found.")
 
     # download crdentials file based on selected mode of authentication
     download_creds_file(auth)
