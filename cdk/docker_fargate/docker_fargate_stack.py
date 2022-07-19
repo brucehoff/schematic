@@ -18,9 +18,9 @@ DOCKER_IMAGE_NAME = "DOCKER_IMAGE"
 COST_CENTER = "COST_CENTER"
 COST_CENTER_TAG_NAME = "CostCenter"
 PORT_NUMBER = "PORT"
-SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY = "SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY"
-SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY = "SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY"
-SECRETS_MANAGER_ENV_PREFIX = "secrets-manager-"
+
+# The name of the environment variable that will hold the secrets
+SECRETS_MANAGER_ENV_NAME = "SECRETS_MANAGER_SECRETS"
 
 def get_required_env(name: str) -> str:
         value = os.getenv(name)
@@ -31,11 +31,7 @@ def get_required_env(name: str) -> str:
 def create_id() -> str:
         return get_required_env(STACK_NAME_PREFIX)+ID_SUFFIX
 
-# the following are the secret names as they will appear inside the container
-SECRET_ENV_NAME_SYNAPSE_AUTH_TOKEN = \
-  SECRETS_MANAGER_ENV_PREFIX+SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY
-SECRET_ENV_NAME_GOOGLE_AUTH_JSON = \
-  SECRETS_MANAGER_ENV_PREFIX+SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY
+
 
 CONTAINER_ENV = "CONTAINER_ENV" # name of env passed from GitHub action
 ENV_NAME = "ENV" # name of env as seen in container
@@ -48,6 +44,9 @@ def get_cluster_name() -> str:
 
 def get_service_name() -> str:
     return get_required_env(STACK_NAME_PREFIX)+SERVICE_SUFFIX
+    
+def get_secret_name() -> str:
+	return get_required_env(STACK_NAME_PREFIX)
 
 def get_docker_image_name():
     return get_required_env(DOCKER_IMAGE_NAME)
@@ -84,8 +83,7 @@ class DockerFargateStack(Stack):
     	cluster = ecs.Cluster(self, get_cluster_name(), vpc=vpc)
         
     	secrets = {
-        	SECRET_ENV_NAME_SYNAPSE_AUTH_TOKEN: create_secret(self, get_secrets_manager_synapse_auth_token_key()),
-        	SECRET_ENV_NAME_GOOGLE_AUTH_JSON:  create_secret(self, get_secrets_manager_google_auth_json_key())
+        	SECRETS_MANAGER_ENV_NAME: create_secret(self, get_secret_name())
         }
         
     	env_vars = {}

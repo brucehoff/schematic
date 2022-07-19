@@ -13,14 +13,9 @@ env:
   AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
   AWS_DEFAULT_REGION: 'us-west-1' 
-  PORT: 3838
+  PORT: 3001
   COST_CENTER: "NO PROGRAM / 000000"
   STACK_NAME_PREFIX: ${{ github.repository }}
-   # These are the names for the secrets in AWS Secrets Manager
-  # We use the github repo' as a prefix to avoid collisions with other 
-  # deployed stacks in the same AWS account.
-  SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY: ${{ github.repository }}/synapse-auth-token
-  SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY: ${{ github.repository }}/google-auth-json
   CONTAINER_ENV: example
 
 jobs:
