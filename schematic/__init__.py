@@ -14,7 +14,7 @@ import json
 
 logging.basicConfig(
     format=("%(levelname)s: [%(asctime)s] %(name)s" " - %(message)s"),
-    level=logging.WARNING,
+    level=logging.DEBUG,
     datefmt="%Y-%m-%d %H:%M:%S",
 )
 
