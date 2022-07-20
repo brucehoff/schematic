@@ -57,12 +57,6 @@ def get_cost_center() -> str:
 def get_port() -> int:
     return int(get_required_env(PORT_NUMBER))
 
-def get_secrets_manager_synapse_auth_token_key() -> str:
-    return get_required_env(SECRETS_MANAGER_SYNAPSE_AUTH_TOKEN_KEY)
-
-def get_secrets_manager_google_auth_json_key() -> str:
-    return get_required_env(SECRETS_MANAGER_GOOGLE_AUTH_JSON_KEY)
-
 def get_container_env() -> str:
     return os.getenv(CONTAINER_ENV)
           
